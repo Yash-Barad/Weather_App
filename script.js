@@ -1,21 +1,21 @@
+//Selecting Elements
 const container = document.querySelector('.container');
 const search = document.querySelector('.search-box button');
+const input = document.querySelector('.search-box input');
 const weatherBox = document.querySelector('.weather-box');
 const weatherDetails = document.querySelector('.weather-details');
 const error404 = document.querySelector('.not-found');
 
-search.addEventListener('click', () => {
-
+const fetchWeather = () => {
     const APIKey = '041230cf7428e752c139991612acf43f';
-    const city = document.querySelector('.search-box input').value;
+    const city = input.value;
 
     if (city === '')
         return;
-
+    //Fetching API Key
     fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${APIKey}`)
         .then(response => response.json())
         .then(json => {
-
             if (json.cod === '404') {
                 container.style.height = '400px';
                 weatherBox.style.display = 'none';
@@ -33,7 +33,7 @@ search.addEventListener('click', () => {
             const description = document.querySelector('.weather-box .description');
             const humidity = document.querySelector('.weather-details .humidity span');
             const wind = document.querySelector('.weather-details .wind span');
-
+            //Selecting The Weather
             switch (json.weather[0].main) {
                 case 'Clear':
                     image.src = 'assets/clear.png';
@@ -69,9 +69,15 @@ search.addEventListener('click', () => {
             weatherBox.classList.add('fadeIn');
             weatherDetails.classList.add('fadeIn');
             container.style.height = '590px';
-
-
         });
+};
 
+// Event listener for the search button click
+search.addEventListener('click', fetchWeather);
 
+// Event listener for the Enter key press
+input.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+        fetchWeather();
+    }
 });
